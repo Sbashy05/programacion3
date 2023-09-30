@@ -1,0 +1,152 @@
+create database facturacion;
+
+use facturacion;
+
+create table empresa(
+idempresa int (10) auto_increment,
+nombre varchar(50) not null,
+direccion varchar (20) null,
+rtn varchar(20) null,
+telefono varchar(15) null,
+correo varchar (50) null, 
+fecha_creacion date,
+estado varchar(20) null,
+primary key(idempresa));
+
+select*from empresa;
+
+create table sucursales(
+  idsuc int not null auto_increment,
+  idempresa int not null,
+  sucursal varchar(50),
+  dirsuc varchar(500),
+  telefono varchar(15),
+  estado varchar(10),
+  primary key (idsuc),
+  foreign key (idempresa) references empresa(idempresa)
+);
+select*from sucursales;
+
+create table proveedor(
+  idprov int not null auto_increment,
+  idempresa int(10) not null,
+  proveedor varchar(100) not null,
+  direccion varchar(900),
+  telefono varchar(15),
+  responsable varchar(50),
+  fecha_creacion date,
+  observaciones varchar(900),
+  estado varchar(10),
+  primary key (idprov),
+  foreign key (idempresa) references empresa(idempresa)
+);
+
+create table areas_trabajo(
+  idarea int(10) not null auto_increment,
+  idempresa int not null,
+  idsuc int not null,
+  area varchar(50),
+  fecha_creacion date,
+  estado varchar(10),
+  primary key (idarea),
+  foreign key (idempresa) references empresa(idempresa),
+  foreign key (idsuc) references sucursales(idsuc)
+);
+
+create table empleados(
+  idemp int not null auto_increment,
+  idempresa int not null,
+  idsuc int not null,
+  idarea int not null,
+  identidad varchar(20),
+  fecha_nac date,
+  nombres varchar(50),
+  apellidos varchar(50),
+  femenino bit,
+  masculino bit,
+  soltero bit,
+  casado bit,
+  unionlibre bit,
+  direccion varchar(900),
+  fecha_creacion date,
+  primary key (idemp),
+  foreign key (idempresa) references empresa(idempresa),
+  foreign key (idsuc) references sucursales(idsuc),
+  foreign key (idarea) references areas_trabajo(idarea)
+);
+
+create table tipousuario(
+  idtpusuario int not null auto_increment,
+  idempresa int not null,
+  tipo varchar(50),
+  estado varchar(10),
+  primary key (idtpusuario),
+  foreign key (idempresa) references empresa(idempresa)
+);
+
+create table usuario(
+  userid int not null auto_increment,
+  idempresa int not null,
+  idsuc int not null,
+  idtpusuario int not null,
+  idemp int not null,
+  usuario varchar(100) not null,
+  clave varchar(100),
+  tipo varchar(50),
+  estado varchar(10),
+  primary key (userid),
+  foreign key (idempresa) references empresa(idempresa),
+  foreign key (idsuc) references sucursales(idsuc),
+  foreign key (idtpusuario) references tipousuario(idtpusuario),
+  foreign key (idemp) references empleados(idemp)
+);
+
+create table clientes(
+  num_clie int not null auto_increment,
+  idempresa int not null,
+  idsuc int not null,
+  identidad varchar(20),
+  rtn varchar(20),
+  fecha_nac date,
+  nombre varchar(50),
+  telefono varchar(15),
+  direccion varchar(500),
+  correo varchar(50),
+  fecha_creacion date,
+  estado varchar(10),
+  primary key (num_clie),
+  foreign key (idempresa) references empresa(idempresa),
+  foreign key (idsuc) references sucursales(idsuc)
+);
+
+create table tipoproducto(
+  idtpprod int not null auto_increment,
+  idempresa int not null,
+  tipo varchar(50),
+  estado varchar(10),
+  primary key (idtpprod),
+  foreign key (idempresa) references empresa(idempresa)
+);
+
+
+create table producto(
+  num_prod int not null auto_increment,
+  idempresa int not null,
+  idsuc int not null,
+  idtpprod int not null,
+  descripcion varchar(50),
+  presentacion varchar(50),
+  marca varchar(50),
+  valor decimal(10,2),
+  precioventa decimal(10,2),
+  existencia decimal(10),
+  fecha_ingreso date,
+  fecha_actualiza date,
+  estado varchar(10),
+  primary key (num_prod),
+  foreign key (idempresa) references empresa(idempresa),
+  foreign key (idsuc) references sucursales(idsuc),
+  foreign key (idtpprod) references tipoproducto(idtpprod)
+);
+
+
